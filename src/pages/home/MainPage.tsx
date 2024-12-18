@@ -214,7 +214,6 @@ const MainPage = () => {
   };
   return (
     <>
-      <Sidebar isOpen={isMenuOpen} />
       <MobileHeader onMenuToggle={toggleMenu} />
       <ChatContainer openModal={toggleSearchModal} />
       <Overlay isVisible={isMenuOpen} />

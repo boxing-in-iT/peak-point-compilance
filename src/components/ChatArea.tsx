@@ -1,8 +1,6 @@
-import { Download } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import DownloadDropdown from "./DownloadDropdown";
-import { Message } from "../store/features/chatsSlice";
+import { useAppSelector } from "../hooks/useAppSelector";
 
 const ChatAreaContainer = styled.div`
   flex: 1;
@@ -10,7 +8,7 @@ const ChatAreaContainer = styled.div`
   flex-direction: column;
   gap: 50px;
   padding: 100px 50px;
-  overflow-y: auto; /* Scrollable if messages exceed the view */
+  overflow-y: auto;
 `;
 
 const MessageBubble = styled.div<{ isSent: boolean }>`
@@ -19,41 +17,81 @@ const MessageBubble = styled.div<{ isSent: boolean }>`
   border-radius: 20px;
   font-size: 14px;
   line-height: 1.5;
-  background-color: ${(props) => (props.isSent ? "#F4F4F4" : "")};
+  background-color: ${(props) => (props.isSent ? "#F4F4F4" : "#d8d8d8")};
   color: #2a2a2a;
   align-self: ${(props) => (props.isSent ? "flex-end" : "flex-start")};
   position: relative;
-  z-index: 1;
 `;
 
 const ChatAreaEmpty = styled.div`
   flex: 1;
   display: flex;
   align-items: flex-end;
-  justify-content: center; /* Align text to bottom */
+  justify-content: center;
   color: #555;
   font-size: 18px;
-  padding-bottom: 100px; /* Space above input box */
-  text-align: center; /* Center text horizontally */
+  padding-bottom: 100px;
+  text-align: center;
 `;
 
-interface ChatAreaProps {
-  messages: Message[];
-}
+export default function ChatArea() {
+  const messages = useAppSelector((state) => state.chats.messages);
 
-export default function ChatArea({ messages }: ChatAreaProps) {
-  if (messages.length === 0) {
+  const [displayedMessages, setDisplayedMessages] = useState<
+    { senderType: string; messageText: string }[]
+  >([]);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (messages.length > displayedMessages.length) {
+      const newMessage = messages[displayedMessages.length];
+
+      if (newMessage.senderType === "bot") {
+        // Start typing effect only if the message is from the bot
+        const words = newMessage.messageText.split(" ");
+        let wordIndex = 0;
+
+        setIsTyping(true); // Start typing effect
+
+        const interval = setInterval(() => {
+          setCurrentMessage(
+            (prev) => prev + (wordIndex > 0 ? " " : "") + words[wordIndex]
+          );
+          wordIndex++;
+
+          if (wordIndex === words.length) {
+            clearInterval(interval);
+            setDisplayedMessages((prev) => [...prev, newMessage]);
+            setCurrentMessage(""); // Reset current message
+            setIsTyping(false); // Stop typing effect
+          }
+        }, 100); // 100ms interval for adding a word
+      } else {
+        // Directly add user message without typing effect
+        setDisplayedMessages((prev) => [...prev, newMessage]);
+      }
+    }
+  }, [messages, displayedMessages]);
+
+  if (!messages || messages.length === 0) {
     return <ChatAreaEmpty>How can I help you?</ChatAreaEmpty>;
   }
 
   return (
     <ChatAreaContainer>
-      {messages.map((message, index) => (
+      {displayedMessages.map((message, index) => (
         <MessageBubble key={index} isSent={message.senderType === "user"}>
           {message.messageText}
-          {message.senderType !== "user" && <DownloadDropdown />}
         </MessageBubble>
       ))}
+      {isTyping && currentMessage && (
+        <MessageBubble
+          isSent={messages[displayedMessages.length]?.senderType === "user"}
+        >
+          {currentMessage}
+        </MessageBubble>
+      )}
     </ChatAreaContainer>
   );
 }

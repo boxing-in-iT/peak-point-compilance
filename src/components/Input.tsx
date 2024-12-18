@@ -1,15 +1,10 @@
-import { ArrowRight, Paperclip } from "lucide-react";
-import React, { useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAppSelector } from "../hooks/useAppSelector";
 import { useAppDispatch } from "../hooks/useAppDispatch";
-import {
-  addChat,
-  Chat,
-  Message,
-  setCurrentChat,
-} from "../store/features/chatsSlice";
-import { mockServerCreateChat } from "../mock/createChat";
+import { addMessage, setIsLoading } from "../store/features/chatsSlice";
+import { useSendMessageMutation } from "../store/api/chatApi";
 
 const InputArea = styled.div`
   width: 90%;
@@ -35,9 +30,9 @@ const InputArea = styled.div`
     background-color: transparent;
     font-size: 16px;
     margin-left: 10px;
-    resize: none; /* Убирает возможность изменения размера */
-    max-height: 150px; /* Максимальная высота */
-    overflow-y: auto; /* Прокрутка при превышении высоты */
+    resize: none;
+    max-height: 150px;
+    overflow-y: auto;
   }
 
   button {
@@ -60,46 +55,51 @@ const InputArea = styled.div`
 
 const Input = () => {
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const currentChat = useAppSelector((state) => state.chats.currentChat);
+  const messages = useAppSelector((state) => state.chats.messages);
+  const loading = useAppSelector((state) => state.chats.loading);
   const dispatch = useAppDispatch();
 
+  const [sendMessage] = useSendMessageMutation();
+
   const handleSendMessage = async () => {
-    console.log("message", message);
     if (!message.trim()) return;
 
-    setLoading(true);
-
-    if (!currentChat) {
-      try {
-        // создаем новый чат
-        const newChat: Chat = await mockServerCreateChat(message);
-        dispatch(addChat(newChat));
-        dispatch(setCurrentChat(newChat));
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        const newMessage: Message = {
-          messageId: `${Date.now()}-msg`,
-          chatId: currentChat.id,
-          messageText: message,
-          createdAt: new Date().toISOString(),
-          senderType: "user",
-        };
-      } catch (error) {
-        console.error("Failed to send message:", error);
-      }
-    }
-
-    setLoading(false);
+    dispatch(setIsLoading(true));
     setMessage("");
+
+    const userMessage = {
+      messageId: Date.now().toString(),
+      messageText: message,
+      createdAt: new Date().toISOString(),
+      senderType: "user",
+    };
+
+    dispatch(addMessage(userMessage));
+
+    try {
+      const response = await sendMessage({ user_query: message }).unwrap();
+
+      const botMessage = {
+        messageId: Date.now().toString(),
+        messageText: response.response,
+        createdAt: new Date().toISOString(),
+        senderType: "bot",
+      };
+
+      dispatch(addMessage(botMessage));
+    } catch (error) {
+      console.error("Failed to send message:", error);
+    } finally {
+      dispatch(setIsLoading(false));
+      setMessage("");
+    }
   };
+  useEffect(() => {
+    console.log("currentChat:", messages);
+  }, [messages]);
 
   return (
     <InputArea>
-      <Paperclip />
       <textarea
         placeholder="Write your request"
         value={message}

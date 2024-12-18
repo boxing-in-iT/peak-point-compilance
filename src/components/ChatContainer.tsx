@@ -44,32 +44,13 @@ interface ChatContainerProps {
   openModal: () => void;
 }
 
-export default function ChatContainer({
-  messages,
-  openModal,
-}: ChatContainerProps) {
-  const dispatch = useAppDispatch();
+export default function ChatContainer() {
   const currentChat = useAppSelector((state) => state.chats.currentChat);
-  const [loading, setLoading] = useState(true);
-
-  const habdleClearCurrentChat = () => {
-    dispatch(setCurrentChat(null));
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false); // Симулируем завершение загрузки
-    }, 3000); // 3 секунды задержки
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <>
-      {loading ? (
-        <LoaderComponent />
-      ) : (
-        <Container>
-          <TopBar>
+      <Container>
+        {/* <TopBar>
             <div style={{ display: "flex", gap: "15px" }}>
               <Search size={20} onClick={openModal} />
               <Edit
@@ -79,13 +60,12 @@ export default function ChatContainer({
               />
             </div>
             <Avatar />
-          </TopBar>
+          </TopBar> */}
 
-          <ChatArea messages={currentChat?.messages || []} />
+        <ChatArea messages={currentChat?.messages || []} />
 
-          <Input />
-        </Container>
-      )}
+        <Input />
+      </Container>
     </>
   );
 }
