@@ -41,9 +41,13 @@ const Avatar = styled.div`
 
 interface ChatContainerProps {
   messages?: string[];
+  openModal: () => void;
 }
 
-export default function ChatContainer({ messages }: ChatContainerProps) {
+export default function ChatContainer({
+  messages,
+  openModal,
+}: ChatContainerProps) {
   const dispatch = useAppDispatch();
   const currentChat = useAppSelector((state) => state.chats.currentChat);
   const [loading, setLoading] = useState(true);
@@ -67,7 +71,7 @@ export default function ChatContainer({ messages }: ChatContainerProps) {
         <Container>
           <TopBar>
             <div style={{ display: "flex", gap: "15px" }}>
-              <Search size={20} />
+              <Search size={20} onClick={openModal} />
               <Edit
                 style={{ cursor: "pointer" }}
                 size={20}

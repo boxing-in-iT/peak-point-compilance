@@ -5,6 +5,8 @@ import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { setChats } from "../../store/features/chatsSlice";
 import styled from "styled-components";
 import Sidebar from "../../components/Sidebar";
+import Modal from "../../components/Modal";
+import SearchPage from "../../components/SearchPage";
 
 const Overlay = styled.div<{ isVisible: boolean }>`
   position: absolute;
@@ -197,6 +199,7 @@ const mockChats = [
 const MainPage = () => {
   const dispatch = useAppDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchModalVisible, setSearchModalVisible] = useState(false);
 
   useEffect(() => {
     dispatch(setChats(mockChats));
@@ -205,12 +208,19 @@ const MainPage = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const toggleSearchModal = () => {
+    setSearchModalVisible(!isSearchModalVisible);
+  };
   return (
     <>
       <Sidebar isOpen={isMenuOpen} />
       <MobileHeader onMenuToggle={toggleMenu} />
-      <ChatContainer />
+      <ChatContainer openModal={toggleSearchModal} />
       <Overlay isVisible={isMenuOpen} />
+      <Modal isVisible={isSearchModalVisible} onClose={toggleSearchModal}>
+        <SearchPage toggleSearchModal={toggleSearchModal} />
+      </Modal>
     </>
   );
 };
