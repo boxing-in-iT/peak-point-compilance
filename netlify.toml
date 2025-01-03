@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/v1/chat/*"
+  to = "http://18.227.114.8/api/v1/chat/:splat"
+  status = 200
+  force = true
