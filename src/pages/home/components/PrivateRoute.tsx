@@ -1,9 +1,7 @@
-import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
 
-import history from "../helpers/history";
-import { useAppSelector } from "../hooks/useAppSelector";
+import history from "../../../helpers/history";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const PrivateRoute = () => {
   const auth = useAppSelector((x) => x.auth.token);

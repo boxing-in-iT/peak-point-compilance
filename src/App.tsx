@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import LoginPage from "./pages/login/LoginPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import MainPage from "./pages/home/MainPage";
+import MainPage from "./pages/home";
 
 const AppContainer = styled.div`
   display: flex;

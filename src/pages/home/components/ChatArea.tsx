@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useAppSelector } from "../hooks/useAppSelector";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const ChatAreaContainer = styled.div`
   flex: 1;
@@ -34,6 +34,32 @@ const ChatAreaEmpty = styled.div`
   text-align: center;
 `;
 
+const formatMessageText = (messageText: string) => {
+  const boldTextRegex = /\*\*(.*?)\*\*/g;
+  const linkRegex = /\[(.*?)\]\((.*?)\)/g;
+  const listRegex = /^(\d+)\.\s(.+)$/gm;
+  const baseUrl = "https://www.ndis.gov.au";
+
+  let formattedText = messageText.replace(boldTextRegex, (_, p1) => {
+    return `<strong>${p1}</strong>`;
+  });
+
+  formattedText = formattedText.replace(linkRegex, (_, text, href) => {
+    const absoluteHref = href.startsWith("http") ? href : `${baseUrl}${href}`;
+    return `<a href="${absoluteHref}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+  });
+
+  formattedText = formattedText.replace(listRegex, (_, __, text) => {
+    return `<li>${text.trim()}</li>`;
+  });
+
+  if (formattedText.includes("<li>")) {
+    formattedText = `<ol>${formattedText}</ol>`;
+  }
+
+  return formattedText;
+};
+
 export default function ChatArea() {
   const messages = useAppSelector((state) => state.chats.messages);
 
@@ -48,7 +74,6 @@ export default function ChatArea() {
       const newMessage = messages[displayedMessages.length];
 
       if (newMessage.senderType === "bot") {
-        // Start typing effect only if the message is from the bot
         const words = newMessage.messageText.split(" ");
         let wordIndex = 0;
 
@@ -68,7 +93,6 @@ export default function ChatArea() {
           }
         }, 100); // 100ms interval for adding a word
       } else {
-        // Directly add user message without typing effect
         setDisplayedMessages((prev) => [...prev, newMessage]);
       }
     }
@@ -82,7 +106,11 @@ export default function ChatArea() {
     <ChatAreaContainer>
       {displayedMessages.map((message, index) => (
         <MessageBubble key={index} isSent={message.senderType === "user"}>
-          {message.messageText}
+          <div
+            dangerouslySetInnerHTML={{
+              __html: formatMessageText(message.messageText),
+            }}
+          />
         </MessageBubble>
       ))}
       {isTyping && currentMessage && (

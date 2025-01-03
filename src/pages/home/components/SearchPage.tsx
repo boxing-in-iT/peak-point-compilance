@@ -1,5 +1,4 @@
 import { CircleX } from "lucide-react";
-import React from "react";
 import styled from "styled-components";
 
 const ModalWrapper = styled.div`
@@ -20,11 +19,7 @@ const CloseButton = styled.button`
 
 const ResultContainer = styled.div``;
 
-interface SearchPageProps {
-  toggleSearchModal: () => void;
-}
-
-const SearchPage = ({ toggleSearchModal }: SearchPageProps) => {
+const SearchPage = () => {
   return (
     <ModalWrapper>
       <InputContainer>

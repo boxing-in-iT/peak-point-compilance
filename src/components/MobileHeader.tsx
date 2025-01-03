@@ -1,7 +1,5 @@
-import React, { useState } from "react";
 import styled from "styled-components";
 
-// Основной контейнер хедера
 const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
@@ -15,11 +13,10 @@ const HeaderContainer = styled.header`
   z-index: 1000;
 
   @media (min-width: 850px) {
-    display: none; // Скрывает хедер на экранах больше 768px
+    display: none;
   }
 `;
 
-// Логотип по центру
 const Title = styled.h1`
   font-size: 16px;
   font-weight: bold;
@@ -28,7 +25,6 @@ const Title = styled.h1`
   text-align: center;
 `;
 
-// Иконка гамбургера
 const Hamburger = styled.div`
   display: flex;
   flex-direction: column;
@@ -45,7 +41,6 @@ const Hamburger = styled.div`
   }
 `;
 
-// Иконка редактирования
 const EditIcon = styled.div`
   width: 20px;
   height: 20px;

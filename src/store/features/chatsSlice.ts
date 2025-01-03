@@ -1,40 +1,17 @@
 // chatSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-
-// export interface Message {
-//   messageId: string;
-//   chatId: string;
-//   messageText: string;
-//   createdAt: string;
-//   senderType: "user" | "bot"; // "user" — сообщение от пользователя, "bot" — сообщение от ИИ
-// }
-
-interface Message {
-  messageId: string;
-  messageText: string;
-  createdAt: string;
-  senderType: "user" | "bot"; // "user" — сообщение от пользователя, "bot" — сообщение от ИИ
-}
-
-export interface Chat {
-  id: string;
-  name: string;
-  messages: Message[];
-  userId: string;
-  createdAt: string;
-  date: string;
-}
+import { IChat, IMessage } from "../../types/chat";
 
 interface ChatState {
-  chats: Chat[];
-  currentChat: Chat | null;
-  messages: Message[];
+  chats: IChat[];
+  currentChat: IChat | null;
+  messages: IMessage[];
   loading: boolean;
 }
 
 const initialState: ChatState = {
-  chats: [], // массив всех чатов
-  currentChat: null, // текущий чат, с которым работает пользователь
+  chats: [],
+  currentChat: null,
   messages: [],
   loading: false,
 };

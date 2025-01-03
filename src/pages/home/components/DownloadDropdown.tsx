@@ -4,8 +4,8 @@ import { Download } from "lucide-react";
 
 const DropdownContainer = styled.div`
   position: absolute;
-  bottom: -25px;
-  /* left: 50%; */
+  bottom: -50px;
+  left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
   font-size: 24px;

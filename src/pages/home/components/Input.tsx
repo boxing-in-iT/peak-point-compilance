@@ -1,10 +1,10 @@
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useAppSelector } from "../hooks/useAppSelector";
-import { useAppDispatch } from "../hooks/useAppDispatch";
-import { addMessage, setIsLoading } from "../store/features/chatsSlice";
-import { useSendMessageMutation } from "../store/api/chatApi";
+import { useAppSelector } from "../../../hooks/useAppSelector";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { addMessage, setIsLoading } from "../../../store/features/chatsSlice";
+import { useSendMessageMutation } from "../../../store/api/chatApi";
 
 const InputArea = styled.div`
   width: 90%;
@@ -78,6 +78,8 @@ const Input = () => {
 
     try {
       const response = await sendMessage({ user_query: message }).unwrap();
+
+      console.log("Response:", response);
 
       const botMessage = {
         messageId: Date.now().toString(),

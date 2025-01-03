@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { useAppDispatch } from "../../hooks/useAppDispatch";
-import { login } from "../../store/features/authSlice";
+// import { useAppDispatch } from "../../hooks/useAppDispatch";
+// import { login } from "../../store/features/authSlice";
 
 // Styles for the page container
 const Container = styled.div`
@@ -76,12 +76,12 @@ const Link = styled.a`
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(login({ email, password }));
-  };
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   dispatch(login({ email, password }));
+  // };
 
   return (
     <Container>

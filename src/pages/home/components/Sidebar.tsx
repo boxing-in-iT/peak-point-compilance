@@ -1,14 +1,14 @@
-import React from "react";
 import styled from "styled-components";
-import logo from "../assets/logo.svg";
-import { useAppDispatch } from "../hooks/useAppDispatch";
-import { useAppSelector } from "../hooks/useAppSelector";
-import { Chat, setCurrentChat } from "../store/features/chatsSlice";
+import logo from "../../../assets/logo.svg";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
+import { setCurrentChat } from "../../../store/features/chatsSlice";
 import {
   getChatsForLast7Days,
   getChatsForToday,
   getChatsForYesterday,
-} from "../utils/dateUtils";
+} from "../../../utils/dateUtils";
+import { IChat } from "../../../types/chat";
 
 const SidebarContainer = styled.div<{ isOpen: boolean }>`
   width: 260px;
@@ -85,7 +85,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const chats = useAppSelector((state) => state.chats.chats);
 
-  const handleChatClick = (chat: Chat) => {
+  const handleChatClick = (chat: IChat) => {
     dispatch(setCurrentChat(chat));
   };
 
